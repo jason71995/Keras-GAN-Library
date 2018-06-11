@@ -71,10 +71,10 @@ def get_training_function(batch_size,noise_size,image_size,generator,discriminat
     d_loss = K.mean(pred_fake) - K.mean(pred_real) + LAMBA * grad_penalty
     g_loss = -K.mean(pred_fake)
 
-    d_training_updates = Adam(lr=0.0001, beta_1=0.0, beta_2=0.9).get_updates(discriminator.trainable_weights, [], d_loss)
+    d_training_updates = Adam(lr=0.0001, beta_1=0.0, beta_2=0.9).get_updates(d_loss, discriminator.trainable_weights)
     d_train = K.function([real_image, K.learning_phase()], [d_loss], d_training_updates)
 
-    g_training_updates = Adam(lr=0.0001, beta_1=0.0, beta_2=0.9).get_updates(generator.trainable_weights, [], g_loss)
+    g_training_updates = Adam(lr=0.0001, beta_1=0.0, beta_2=0.9).get_updates(g_loss, generator.trainable_weights)
     g_train = K.function([K.learning_phase()], [g_loss], g_training_updates)
 
     return d_train,g_train

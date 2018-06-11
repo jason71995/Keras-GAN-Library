@@ -34,9 +34,9 @@ d_train, g_train = get_training_function(batch_size,noise_size,image_size,genera
 for e in range(epoch):
     for s in range(steps):
         real_images = x_train[np.random.permutation(num_of_data)[:batch_size]]
-        his_d, = d_train([real_images,1])
-        his_g, = g_train([1])
-        print ("[{0}/{1}] [{2}/{3}] d_loss: {4:.4}, g_loss: {5:.4}".format(e,epoch,s,steps,his_d,his_g))
+        d_loss, = d_train([real_images, 1])
+        g_loss, = g_train([1])
+        print ("[{0}/{1}] [{2}/{3}] d_loss: {4:.4}, g_loss: {5:.4}".format(e, epoch, s, steps, d_loss, g_loss))
 
     generator.save_weights("e{0}_generator.h5".format(e))
     predict_images("e{0}_img.png".format(e), generator,noise_size,10,32)
