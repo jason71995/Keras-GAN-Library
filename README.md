@@ -20,7 +20,7 @@ keras==2.1.0
  - DCGAN - Unsupervised Representation Learning with Deep Convolutional Generative Adversarial Networks [link](https://arxiv.org/abs/1511.06434)
  - LSGAN - Loss-Sensitive Generative Adversarial Networks on Lipschitz Densities [link](https://arxiv.org/abs/1701.06264)
  - WGAN-GP - Improved Training of Wasserstein GANs [link](https://arxiv.org/abs/1704.00028)
- - SNGAN - Spectrally-normalized margin bounds for neural networks [link](https://arxiv.org/abs/1706.08498)
+ - SNGAN - Spectral Normalization for Generative Adversarial Networks [link](https://arxiv.org/abs/1802.05957)
  
 ## Results
 

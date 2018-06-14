@@ -1,7 +1,7 @@
 '''
-    Spectrally-normalized margin bounds for neural networks
+    Spectral Normalization for Generative Adversarial Networks
     Ref:
-        - https://arxiv.org/abs/1706.08498
+        - https://arxiv.org/abs/1802.05957
         - https://github.com/pfnet-research/sngan_projection/tree/master/source
 '''
 
