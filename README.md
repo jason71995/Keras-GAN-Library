@@ -24,16 +24,9 @@ keras==2.1.0
  
 ## Results
 
-Results on 50 epochs.
-
-### DCGAN
-![alt text](https://i.imgur.com/e3xxYkw.png "DCGAN")
-
-### LSGAN
-![alt text](https://i.imgur.com/25fLTTR.png "LSGAN")
-
-### WGAN-GP
-![alt text](https://i.imgur.com/Az9l0FS.png "WGAN-GP")
-
-### SNGAN
-![alt text](https://i.imgur.com/xfIDVTo.png "SNGAN")
+| Name | 50 epochs |
+| :---: | :---: |
+| DCGAN | ![alt text](https://i.imgur.com/e3xxYkw.png "DCGAN") |
+| LSGAN | ![alt text](https://i.imgur.com/25fLTTR.png "LSGAN") |
+| WGAN-GP | ![alt text](https://i.imgur.com/Az9l0FS.png "WGAN-GP") |
+| SNGAN | ![alt text](https://i.imgur.com/xfIDVTo.png "SNGAN") |
