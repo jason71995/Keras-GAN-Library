@@ -6,26 +6,23 @@
 
 import keras.backend as K
 from keras.models import Sequential
-from keras.layers import Conv2D,GlobalAveragePooling2D,LeakyReLU,UpSampling2D
+from keras.layers import Conv2D,GlobalAveragePooling2D,LeakyReLU,Conv2DTranspose
 from keras.optimizers import Adam
 from keras.layers import Input
 
 def build_generator(input_shape):
     model = Sequential()
 
-    model.add(Conv2D(512,(3,3),input_shape=input_shape,padding="same"))
+    model.add(Conv2DTranspose(512,(3,3),strides=(2,2),padding="same",input_shape=input_shape))
     model.add(LeakyReLU(0.2))
 
-    model.add(UpSampling2D((2,2)))
-    model.add(Conv2D(256,(3,3),padding="same"))
+    model.add(Conv2DTranspose(256,(3,3),strides=(2,2),padding="same"))
     model.add(LeakyReLU(0.2))
 
-    model.add(UpSampling2D((2,2)))
-    model.add(Conv2D(128,(3,3),padding="same"))
+    model.add(Conv2DTranspose(128,(3,3),strides=(2,2),padding="same"))
     model.add(LeakyReLU(0.2))
 
-    model.add(UpSampling2D((2,2)))
-    model.add(Conv2D(64,(3,3),padding="same"))
+    model.add(Conv2DTranspose(64,(3,3),strides=(2,2),padding="same"))
     model.add(LeakyReLU(0.2))
 
     model.add(Conv2D(3,(3,3),padding="same",activation="tanh"))
@@ -35,7 +32,7 @@ def build_generator(input_shape):
 def build_discriminator(input_shape):
     model = Sequential()
 
-    model.add(Conv2D(64,(3,3),input_shape=input_shape,padding="same"))
+    model.add(Conv2D(64,(3,3),strides=(2,2),padding="same",input_shape=input_shape))
     model.add(LeakyReLU(0.2))
 
     model.add(Conv2D(128,(3,3),strides=(2,2),padding="same"))

@@ -14,7 +14,7 @@ set_gpu_config("0",0.5)
 epoch = 50
 steps = 1000
 image_size = (32,32,3)
-noise_size = (4,4,100)
+noise_size = (2,2,32)
 batch_size = 16
 
 (x_train, y_train), (x_test, y_test) = cifar10.load_data()
