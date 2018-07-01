@@ -1,12 +1,12 @@
 import keras
 from keras.datasets import cifar10
 
-from lib.DCGAN import build_generator, build_discriminator, get_training_function
-# from lib.LSGAN import build_generator, build_discriminator, get_training_function
-# from lib.SNGAN import build_generator, build_discriminator, get_training_function
-# from lib.WGAN_GP import build_generator, build_discriminator, get_training_function
+from gan_libs.DCGAN import build_generator, build_discriminator, get_training_function
+# from gan_libs.LSGAN import build_generator, build_discriminator, get_training_function
+# from gan_libs.SNGAN import build_generator, build_discriminator, get_training_function
+# from gan_libs.WGAN_GP import build_generator, build_discriminator, get_training_function
 
-from lib.tools import set_gpu_config, predict_images
+from utils.common import set_gpu_config, predict_images
 import numpy as np
 
 set_gpu_config("0",0.5)
