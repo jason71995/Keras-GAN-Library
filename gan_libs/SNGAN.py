@@ -66,10 +66,12 @@ def get_training_function(batch_size,noise_size,image_size,generator,discriminat
     d_loss = K.mean(K.maximum(0., 1 - pred_real)) + K.mean(K.maximum(0., 1 + pred_fake))
     g_loss = -K.mean(pred_fake)
 
-    d_training_updates = Adam(lr=0.0001,beta_1=0.0,beta_2=0.9).get_updates(d_loss, discriminator.trainable_weights)
-    d_train = K.function([real_image, K.learning_phase()], [d_loss], d_training_updates)
+    # get updates of W_u in SNConv2D layers
+    d_updates = discriminator.get_updates_for([K.concatenate([real_image,fake_image],axis=0)])
+    d_training_updates = Adam(lr=0.0001, beta_1=0.0, beta_2=0.9).get_updates(d_loss, discriminator.trainable_weights)
+    d_train = K.function([real_image, K.learning_phase()], [d_loss],d_updates + d_training_updates)
 
-    g_training_updates = Adam(lr=0.0001,beta_1=0.0,beta_2=0.9).get_updates(g_loss, generator.trainable_weights)
+    g_training_updates = Adam(lr=0.0001, beta_1=0.0, beta_2=0.9).get_updates(g_loss, generator.trainable_weights)
     g_train = K.function([K.learning_phase()], [g_loss], g_training_updates)
 
     return d_train,g_train
@@ -122,9 +124,30 @@ class SNConv2D(_Conv):
         )
 
     def call(self, inputs):
+
+        # Spectrally Normalized Weight
+        W_mat = K.permute_dimensions(self.kernel, (3, 2, 0, 1)) # (h, w, i, o) => (o, i, h, w)
+        W_mat = K.reshape(W_mat,[K.shape(W_mat)[0], -1]) # (o, i * h * w)
+
+        if not self.Ip >= 1:
+            raise ValueError("The number of power iterations should be positive integer")
+
+        _u = self.u
+        _v = None
+
+        for _ in range(self.Ip):
+            _v = _l2normalize(K.dot(_u, W_mat))
+            _u = _l2normalize(K.dot(_v, K.transpose(W_mat)))
+
+        sigma = K.sum(K.dot(_u,W_mat)*_v)
+
+        self.add_update(K.update(self.u, _u), inputs)
+        W_SN_norm = self.kernel / sigma
+
+
         outputs = K.conv2d(
             inputs,
-            self.W_bar(),
+            W_SN_norm,
             strides=self.strides,
             padding=self.padding,
             data_format=self.data_format,
@@ -146,25 +169,6 @@ class SNConv2D(_Conv):
         config.pop('rank')
         return config
 
-    def W_bar(self):
-        # Spectrally Normalized Weight
-        W_mat = K.permute_dimensions(self.kernel, (3, 2, 0, 1)) # (h, w, i, o) => (o, i, h, w)
-        W_mat = K.reshape(W_mat,[K.shape(W_mat)[0], -1]) # (o, i * h * w)
-
-        if not self.Ip >= 1:
-            raise ValueError("The number of power iterations should be positive integer")
-
-        _u = self.u
-        _v = None
-
-        for _ in range(self.Ip):
-            _v = _l2normalize(K.dot(_u, W_mat))
-            _u = _l2normalize(K.dot(_v, K.transpose(W_mat)))
-
-        sigma = K.sum(K.dot(_u,W_mat)*_v)
-
-        K.update(self.u,K.in_train_phase(_u, self.u))
-        return self.kernel / sigma
 
 def _l2normalize(x):
     return x / K.sqrt(K.sum(K.square(x)) + K.epsilon())
