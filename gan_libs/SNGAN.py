@@ -7,9 +7,9 @@
 
 import keras.backend as K
 from keras.models import Sequential
-from keras.layers import GlobalAveragePooling2D,LeakyReLU,Conv2DTranspose
+from keras.layers import GlobalAveragePooling2D,LeakyReLU,Conv2DTranspose, Conv2D
 from keras.optimizers import Adam
-from keras.layers import Input, Conv2D
+
 from keras.layers.convolutional import _Conv
 from keras.legacy import interfaces
 from keras.engine import InputSpec
@@ -53,11 +53,10 @@ def build_discriminator(input_shape):
 
     return model
 
-def get_training_function(batch_size,noise_size,image_size,generator,discriminator):
-
-    real_image = Input(image_size)
+def build_functions(batch_size, noise_size, image_size, generator, discriminator):
 
     noise = K.random_normal((batch_size,) + noise_size,0.0,1.0,"float32")
+    real_image = K.placeholder((batch_size,) + image_size)
     fake_image = generator(noise)
 
     pred_real = discriminator(real_image)

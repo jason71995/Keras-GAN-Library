@@ -1,10 +1,10 @@
 import keras
 from keras.datasets import cifar10
 
-from gan_libs.DCGAN import build_generator, build_discriminator, get_training_function
-# from gan_libs.LSGAN import build_generator, build_discriminator, get_training_function
-# from gan_libs.SNGAN import build_generator, build_discriminator, get_training_function
-# from gan_libs.WGAN_GP import build_generator, build_discriminator, get_training_function
+from gan_libs.DCGAN import build_generator, build_discriminator, build_functions
+# from gan_libs.LSGAN import build_generator, build_discriminator, build_functions
+# from gan_libs.SNGAN import build_generator, build_discriminator, build_functions
+# from gan_libs.WGAN_GP import build_generator, build_discriminator, build_functions
 
 from utils.common import set_gpu_config, predict_images
 import numpy as np
@@ -29,7 +29,7 @@ y_test = keras.utils.to_categorical(y_test,10)
 
 generator = build_generator(noise_size)
 discriminator = build_discriminator(image_size)
-d_train, g_train = get_training_function(batch_size,noise_size,image_size,generator,discriminator)
+d_train, g_train = build_functions(batch_size, noise_size, image_size, generator, discriminator)
 
 for e in range(epoch):
     for s in range(steps):
