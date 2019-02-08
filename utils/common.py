@@ -12,10 +12,11 @@ def set_gpu_config(device = "0",fraction=0.25):
 
 def predict_images(file_name, generator, noise_size, n = 10, size = 32):
 
-    image = np.zeros(shape=(size*n,size*n,3))
-    for i in range(0,size*n,size):
-        for j in range(0,size*n,size):
-            image[i:i+size, j:j+size, :] = generator.predict(np.random.normal(size=(1, ) + noise_size))[0]
+    image = generator.predict(np.random.normal(size=(n*n, ) + noise_size))
+
+    image = np.reshape(image, (n, n, size, size, 3))
+    image = np.transpose(image, (0, 2, 1, 3, 4))
+    image = np.reshape(image, (n*size, n*size, 3))
 
     image = 255 * (image + 1) / 2
     image = image.astype("uint8")
