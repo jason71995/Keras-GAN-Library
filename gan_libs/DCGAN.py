@@ -5,6 +5,7 @@
 '''
 
 import keras.backend as K
+import tensorflow as tf
 from keras.models import Sequential
 from keras.layers import Conv2D,GlobalAveragePooling2D,LeakyReLU,Conv2DTranspose,Activation,BatchNormalization
 from keras.optimizers import Adam
@@ -63,15 +64,17 @@ def build_functions(batch_size, noise_size, image_size, generator, discriminator
     real_image = K.placeholder((batch_size,) + image_size)
     fake_image = generator(noise)
 
-    pred_real = K.clip(discriminator(real_image),K.epsilon(),1-K.epsilon())
-    pred_fake = K.clip(discriminator(fake_image),K.epsilon(),1-K.epsilon())
+    d_input = K.concatenate([real_image, fake_image], axis=0)
+    pred_real, pred_fake = tf.split(discriminator(d_input), num_or_size_splits = 2, axis = 0)
+
+    pred_real = K.clip(pred_real,K.epsilon(),1-K.epsilon())
+    pred_fake = K.clip(pred_fake,K.epsilon(),1-K.epsilon())
 
     d_loss = -(K.mean(K.log(pred_real)) + K.mean(K.log(1-pred_fake)))
     g_loss = -K.mean(K.log(pred_fake))
 
-
     # get updates of mean and variance in batch normalization layers
-    d_updates = discriminator.get_updates_for([K.concatenate([real_image,fake_image],axis=0)])
+    d_updates = discriminator.get_updates_for([d_input])
     g_updates = generator.get_updates_for([noise])
 
     d_training_updates = Adam(lr=0.0001, beta_1=0.0, beta_2=0.9).get_updates(d_loss, discriminator.trainable_weights)
