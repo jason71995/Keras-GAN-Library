@@ -65,10 +65,8 @@ def build_functions(batch_size, noise_size, image_size, generator, discriminator
     d_loss = K.mean(K.maximum(0., 1 - pred_real)) + K.mean(K.maximum(0., 1 + pred_fake))
     g_loss = -K.mean(pred_fake)
 
-    # get updates of W_u in SNConv2D layers
-    d_updates = discriminator.get_updates_for([K.concatenate([real_image,fake_image],axis=0)])
     d_training_updates = Adam(lr=0.0001, beta_1=0.0, beta_2=0.9).get_updates(d_loss, discriminator.trainable_weights)
-    d_train = K.function([real_image, K.learning_phase()], [d_loss],d_updates + d_training_updates)
+    d_train = K.function([real_image, K.learning_phase()], [d_loss], d_training_updates)
 
     g_training_updates = Adam(lr=0.0001, beta_1=0.0, beta_2=0.9).get_updates(g_loss, generator.trainable_weights)
     g_train = K.function([K.learning_phase()], [g_loss], g_training_updates)
