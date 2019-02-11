@@ -4,8 +4,8 @@
         - https://arxiv.org/abs/1511.06434
 '''
 
-import keras.backend as K
 import tensorflow as tf
+import keras.backend as K
 from keras.models import Sequential
 from keras.layers import Conv2D,GlobalAveragePooling2D,LeakyReLU,Conv2DTranspose,Activation,BatchNormalization
 from keras.optimizers import Adam
@@ -81,6 +81,6 @@ def build_functions(batch_size, noise_size, image_size, generator, discriminator
     d_train = K.function([real_image, K.learning_phase()], [d_loss],d_updates + d_training_updates)
 
     g_training_updates = Adam(lr=0.0001, beta_1=0.0, beta_2=0.9).get_updates(g_loss, generator.trainable_weights)
-    g_train = K.function([K.learning_phase()], [g_loss], g_updates + g_training_updates)
+    g_train = K.function([real_image, K.learning_phase()], [g_loss], g_updates + g_training_updates)
 
     return d_train,g_train

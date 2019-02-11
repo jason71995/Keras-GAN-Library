@@ -5,6 +5,7 @@
         - https://github.com/pfnet-research/sngan_projection/tree/master/source
 '''
 
+import tensorflow as tf
 import keras.backend as K
 from keras.models import Sequential
 from keras.layers import GlobalAveragePooling2D,LeakyReLU,Conv2DTranspose, Conv2D
@@ -59,8 +60,8 @@ def build_functions(batch_size, noise_size, image_size, generator, discriminator
     real_image = K.placeholder((batch_size,) + image_size)
     fake_image = generator(noise)
 
-    pred_real = discriminator(real_image)
-    pred_fake = discriminator(fake_image)
+    d_input = K.concatenate([real_image, fake_image], axis=0)
+    pred_real, pred_fake = tf.split(discriminator(d_input), num_or_size_splits = 2, axis = 0)
 
     d_loss = K.mean(K.maximum(0., 1 - pred_real)) + K.mean(K.maximum(0., 1 + pred_fake))
     g_loss = -K.mean(pred_fake)
@@ -69,7 +70,7 @@ def build_functions(batch_size, noise_size, image_size, generator, discriminator
     d_train = K.function([real_image, K.learning_phase()], [d_loss], d_training_updates)
 
     g_training_updates = Adam(lr=0.0001, beta_1=0.0, beta_2=0.9).get_updates(g_loss, generator.trainable_weights)
-    g_train = K.function([K.learning_phase()], [g_loss], g_training_updates)
+    g_train = K.function([real_image, K.learning_phase()], [g_loss], g_training_updates)
 
     return d_train,g_train
 
