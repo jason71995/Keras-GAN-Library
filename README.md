@@ -4,7 +4,8 @@
 Implementation of GAN papers, all using cifar10 dataset in this project.
 
 ATTENTION:
-To compare the differences of GAN methods, the hyperparameters in this project are not exactly same as papers.
+- **This repository is no longer maintained, please see [here](https://github.com/jason71995/tf2_gan_library) for implementations in Tensorflow 2.0 and Keras**
+- To compare the differences of GAN methods, the hyperparameters in this project are not exactly same as papers.
 Architecture of generators and discriminators are as similar as possible, and using same optimizer setting.
 
 ## Environment
